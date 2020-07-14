@@ -28,19 +28,18 @@ package main
 import "github.com/kataras/tunnel"
 ```
 
-Start a new http Server:
+Start a new local http Server and expose it to the internet using **just a single new line of code**:
 
 ```go
-import "net/http"
+func main() {
+    // [...http.HandleFunc]
 
-srv := &http.Server{ Addr: addr, Handler: mux}
-go srv.ListenAndServe()
-```
-
-Start the tunnel:
-
-```go
-publicAddrs := tunnel.MustStart(tunnel.WithServers(srv))
+    srv := &http.Server{Addr: ":8080"}
+    // 1 LOC:
+    go fmt.Printf("• Public Address: %s\n", tunnel.MustStart(tunnel.WithServers(srv)))
+    //
+    srv.ListenAndServe()
+}
 ```
 
 OR
@@ -62,8 +61,10 @@ fmt.Printf("• Public Address: %s\n", publicAddrs)
 Example output:
 
 ```sh
-• Public Address: https://ef02b1377b65.ngrok.io
+• Public Address: [https://ef02b1377b65.ngrok.io]
 ```
+
+> The [Web Interface](https://ngrok.com/docs#inspect) is also available.
 
 Please navigate through [_examples](_examples) directory for more.
 
