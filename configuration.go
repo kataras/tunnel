@@ -56,7 +56,7 @@ type (
 		// AuthToken field is optionally and can be used
 		// to authenticate the ngrok access.
 		// ngrok authtoken <YOUR_AUTHTOKEN>
-		AuthToken string `json:"authToken,omitempty" yaml:"AuthToken" toml:"AuthToken"`
+		AuthToken string `ini:"auth_token" json:"authToken,omitempty" yaml:"AuthToken" toml:"AuthToken"`
 
 		// No:
 		// Config is optionally and can be used
@@ -69,14 +69,14 @@ type (
 
 		// Bin is the system binary path of the ngrok executable file.
 		// If it's empty then it will try to find it through system env variables.
-		Bin string `json:"bin,omitempty" yaml:"Bin" toml:"Bin"`
+		Bin string `ini:"bin" json:"bin,omitempty" yaml:"Bin" toml:"Bin"`
 
 		// WebUIAddr is the web interface address of an already-running ngrok instance.
 		// The package will try to fetch the default web interface address(http://127.0.0.1:4040)
 		// to determinate if a ngrok instance is running before try to start it manually.
 		// However if a custom web interface address is used,
 		// this field must be set e.g. http://127.0.0.1:5050.
-		WebInterface string `json:"webInterface,omitempty" yaml:"WebInterface" toml:"WebInterface"`
+		WebInterface string `ini:"web_interface" json:"webInterface,omitempty" yaml:"WebInterface" toml:"WebInterface"`
 
 		// Region is optionally, can be used to set the region which defaults to "us".
 		// Available values are:
@@ -87,11 +87,11 @@ type (
 		// "sa" for South America
 		// "jp" forJapan
 		// "in" for India
-		Region string `json:"region,omitempty" yaml:"Region" toml:"Region"`
+		Region string `ini:"region" json:"region,omitempty" yaml:"Region" toml:"Region"`
 
 		// Tunnels the collection of the tunnels.
 		// Most of the times you only need one.
-		Tunnels []Tunnel `json:"tunnels" yaml:"Tunnels" toml:"Tunnels"`
+		Tunnels []Tunnel `ini:"tunnels" json:"tunnels" yaml:"Tunnels" toml:"Tunnels"`
 	}
 
 	// Tunnel is the Tunnels field of the Configuration structure.
@@ -100,9 +100,9 @@ type (
 		// it is used to create and close tunnels, e.g. "MyApp".
 		// If this field is not empty then ngrok tunnels will be created
 		// when the app is up and running.
-		Name string `json:"name" yaml:"Name" toml:"Name"`
+		Name string `ini:"name" json:"name" yaml:"Name" toml:"Name"`
 		// Addr should be set of form 'hostname:port'.
-		Addr string `json:"addr,omitempty" yaml:"Addr" toml:"Addr"`
+		Addr string `ini:"addr" json:"addr,omitempty" yaml:"Addr" toml:"Addr"`
 	}
 )
 
