@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // Configurator is an interface with a single `Apply` method.
@@ -145,14 +146,15 @@ func (tc Configuration) isNgrokRunning() bool {
 	return true
 }
 
-// https://ngrok.com/docs
+// https://ngrok.com/docs/ngrok-agent/api
 type ngrokTunnel struct {
-	Name     string `json:"name"`
-	Addr     string `json:"addr"`
-	Proto    string `json:"proto"`
-	Auth     string `json:"auth"`
-	BindTLS  bool   `json:"bind_tls"`
-	Hostname string `json:"hostname"`
+	Name  string `json:"name"`
+	Addr  string `json:"addr"`
+	Proto string `json:"proto"`
+	Auth  string `json:"basic_auth,omitempty"`
+	//	BindTLS  bool   `json:"bind_tls"`
+	Schemes  []string `json:"schemes"`
+	Hostname string   `json:"hostname"`
 }
 
 // ErrExec returns when ngrok executable was not found in the PATH or NGROK environment variable.
@@ -167,7 +169,8 @@ func (tc Configuration) StartTunnel(t Tunnel, publicAddr *string) error {
 		Addr:     t.Addr,
 		Hostname: t.Hostname,
 		Proto:    "http",
-		BindTLS:  true,
+		Schemes:  []string{"https"},
+		// BindTLS:  true,
 	}
 
 	if !tc.isNgrokRunning() {
@@ -187,23 +190,27 @@ func (tc Configuration) StartTunnel(t Tunnel, publicAddr *string) error {
 			ngrokBin = tc.Bin
 		}
 
-		if tc.AuthToken != "" {
-			cmd := exec.Command(ngrokBin, "authtoken", tc.AuthToken)
-			err := cmd.Run()
-			if err != nil {
-				return err
-			}
-		}
+		// if tc.AuthToken != "" {
+		// 	cmd := exec.Command(ngrokBin, "config", "add-authtoken", tc.AuthToken)
+		// 	err := cmd.Run()
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// }
 
 		// start -none, start without tunnels.
 		//  and finally the -log stdout logs to the stdout otherwise the pipe will never be able to read from, spent a lot of time on this lol.
-		cmd := exec.Command(ngrokBin, "start", "-none", "-log", "stdout")
+		cmd := exec.Command(ngrokBin, "start", "--none", "--log", "stdout")
 
 		// if tc.Config != "" {
-		// 	cmd.Args = append(cmd.Args, []string{"-config", tc.Config}...)
+		// 	cmd.Args = append(cmd.Args, []string{"--config", tc.Config}...)
 		// }
+		if tc.AuthToken != "" {
+			cmd.Args = append(cmd.Args, []string{"--authtoken", tc.AuthToken}...)
+		}
+
 		if tc.Region != "" {
-			cmd.Args = append(cmd.Args, []string{"-region", tc.Region}...)
+			cmd.Args = append(cmd.Args, []string{"--region", tc.Region}...)
 		}
 
 		// cmd.Stdout = os.Stdout
@@ -275,11 +282,7 @@ func (tc Configuration) createTunnel(tunnelAPIRequest ngrokTunnel, publicAddr *s
 		return err
 	}
 
-	if errText := apiResponse.ErrMsg; errText != "" {
-		return errors.New(errText)
-	}
-
-	if errText := apiResponse.Details.ErrorText; errText != "" {
+	if errText := strings.Join([]string{apiResponse.ErrMsg, apiResponse.Details.ErrorText}, ": "); len(errText) > 2 {
 		return errors.New(errText)
 	}
 
