@@ -1,6 +1,6 @@
 # Tunnel
 
-[![build status](https://img.shields.io/github/workflow/status/kataras/tunnel/CI/master?style=for-the-badge)](https://github.com/kataras/tunnel/actions) [![report card](https://img.shields.io/badge/report%20card-a%2B-ff3333.svg?style=for-the-badge)](https://goreportcard.com/report/github.com/kataras/tunnel) [![godocs](https://img.shields.io/badge/go-%20docs-488AC7.svg?style=for-the-badge)](https://godoc.org/github.com/kataras/tunnel)
+[![build status](https://img.shields.io/github/actions/workflow/status/kataras/tunnel/ci.yml?style=for-the-badge)](https://github.com/kataras/tunnel/actions) [![report card](https://img.shields.io/badge/report%20card-a%2B-ff3333.svg?style=for-the-badge)](https://goreportcard.com/report/github.com/kataras/tunnel) [![godocs](https://img.shields.io/badge/go-%20docs-488AC7.svg?style=for-the-badge)](https://godoc.org/github.com/kataras/tunnel)
 
 Public URLs for exposing your local web server using [ngrok's API](https://ngrok.com/).
 
